@@ -69,7 +69,7 @@ def show3Dpose(vals, ax):
     ax.set_xlim3d([-RADIUS+xroot, RADIUS+xroot])
     ax.set_ylim3d([-RADIUS+yroot, RADIUS+yroot])
     ax.set_zlim3d([-RADIUS_Z+zroot, RADIUS_Z+zroot])
-    ax.set_aspect('equal') # works fine in matplotlib==2.2.2
+    ax.set_aspect('equal') # works fine in matplotlib==2.2.2 or 3.7.1
 
     white = (1.0, 1.0, 1.0, 0.0)
     ax.xaxis.set_pane_color(white) 
@@ -87,10 +87,12 @@ def get_pose2D(video_path, output_dir):
     height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
     print('\nGenerating 2D pose...')
-    keypoints, scores = hrnet_pose(video_path, det_dim=416, num_peroson=1, gen_output=True)
+    with torch.no_grad():
+        # the first frame of the video should be detected a person
+        keypoints, scores = hrnet_pose(video_path, det_dim=416, num_peroson=1, gen_output=True)
     keypoints, scores, valid_frames = h36m_coco_format(keypoints, scores)
     re_kpts = revise_kpts(keypoints, scores, valid_frames)
-    print('Generating 2D pose successful!')
+    print('Generating 2D pose successfully!')
 
     output_dir += 'input_2D/'
     os.makedirs(output_dir, exist_ok=True)
@@ -154,7 +156,11 @@ def get_pose3D(video_path, output_dir):
 
     ## 3D
     print('\nGenerating 3D pose...')
+<<<<<<< HEAD
     final3dposes = []
+=======
+    output_3d_all = []
+>>>>>>> f45cc7bda00db97c9d60cfbd404e5a153cbac5e7
     for i in tqdm(range(video_length)):
         ret, img = cap.read()
         img_size = img.shape
@@ -202,6 +208,8 @@ def get_pose3D(video_path, output_dir):
         output_3D = output_3D[0:, args.pad].unsqueeze(1) 
         output_3D[:, :, 0, :] = 0
         post_out = output_3D[0, 0].cpu().detach().numpy()
+
+        output_3d_all.append(post_out)
 
         rot =  [0.1407056450843811, -0.1500701755285263, -0.755240797996521, 0.6223280429840088]
         rot = np.array(rot, dtype='float32')
@@ -260,7 +268,7 @@ def get_pose3D(video_path, output_dir):
         edge = (image_2d.shape[1] - image_2d.shape[0]) // 2
         image_2d = image_2d[:, edge:image_2d.shape[1] - edge]
 
-        edge = 130
+        edge = 102
         image_3d = image_3d[edge:image_3d.shape[0] - edge, edge:image_3d.shape[1] - edge]
 
         ## show

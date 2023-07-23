@@ -1,13 +1,14 @@
-opencv-python
+numpy
+einops
+timm
+matplotlib==3.7.1
 tqdm
 yacs
 numba
-scikit-image
 filterpy
+scikit-image
+opencv-python
 ipython
-einops
-timm==0.4.5
-matplotlib==2.2.2
 
 
 

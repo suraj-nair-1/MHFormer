@@ -17,9 +17,8 @@
 
 ## Installation
 
-- Create a conda environment: ```conda create -n mhformer python=3.7```
-- Download cudatoolkit=11.0 from [here](https://developer.nvidia.com/cuda-11.0-download-archive) and install 
-- ```pip3 install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html```
+- Create a conda environment: ```conda create -n mhformer python=3.9```
+- Install PyTorch 1.7.1 and Torchvision 0.8.2 following the [official instructions](https://pytorch.org/)
 - ```pip3 install -r requirements.txt```
   
 ## Dataset setup
@@ -95,6 +94,14 @@ If you find our work useful in your research, please consider citing:
       booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
       pages={13147-13156},
       year={2022}
+    }
+
+    @article{li2023multi,
+      title={Multi-Hypothesis Representation Learning for Transformer-Based 3D Human Pose Estimation},
+      author={Li, Wenhao and Liu, Hong and Tang, Hao and Wang, Pichao},
+      journal={Pattern Recognition},
+      pages={109631},
+      year={2023},
     }
 
 ## Acknowledgement
