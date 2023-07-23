@@ -154,6 +154,7 @@ def get_pose3D(video_path, output_dir):
 
     ## 3D
     print('\nGenerating 3D pose...')
+    final3dposes = []
     for i in tqdm(range(video_length)):
         ret, img = cap.read()
         img_size = img.shape
@@ -222,11 +223,27 @@ def get_pose3D(video_path, output_dir):
         gs.update(wspace=-0.00, hspace=0.05) 
         ax = plt.subplot(gs[0], projection='3d')
         show3Dpose( post_out, ax)
+        final3dposes.append(post_out)
 
         output_dir_3D = output_dir +'pose3D/'
         os.makedirs(output_dir_3D, exist_ok=True)
         plt.savefig(output_dir_3D + str(('%04d'% i)) + '_3D.png', dpi=200, format='png', bbox_inches = 'tight')
         
+    final3dposes = np.stack(final3dposes)
+    print(final3dposes.shape)
+    
+    f3p = final3dposes.reshape(final3dposes.shape[0], -1)
+    import pandas as pd
+    a = pd.DataFrame(f3p)
+    cols = []
+    for name in ["between hips", "right hip", "right knee", "right ankle", 
+                 "left hip", "left knee", "left ankle", "back", "neck", "head (lips)", 
+                 "sitehead (forehead)", "left shoulder", "left elbow", "left wrist", 
+                 "right shoulder", "right elbow", "right wrist"]:
+      for dim in ["x", "y", "z"]:
+        cols.append(f"{name} ({dim})")
+    a.columns = cols
+    a.to_csv(os.path.join(output_dir_3D, 'datapoints.csv'))
     print('Generating 3D pose successful!')
 
     ## all
@@ -280,3 +297,23 @@ if __name__ == "__main__":
     print('Generating demo successful!')
 
 
+
+"""
+0 = between hips
+1 = right hip
+2 = right knee
+3 = right ankle
+6 = left hip
+7 = left knee
+8 = left ankle
+12 = back
+13 = neck
+14 = head (lips)
+15 = sitehead (forehead)
+17 = left shoulder
+18 = left elbow
+19 = left wrist
+25 = right shoulder
+26 = right elbow
+27 = right wrist
+"""
